@@ -3,8 +3,10 @@ from pathlib import Path
 import pandas as pd
 import os
 import openpyxl
+from PIL import Image
+from resizeimage import resizeimage
 
-xlsx_path = 'Здоровое питание_20221110_11-53.xlsx'
+xlsx_path = 'Здоровое питание_20221110_12-50.xlsx'
 
 
 def get_pics_from_urls(path_to_xlsx):
@@ -14,21 +16,49 @@ def get_pics_from_urls(path_to_xlsx):
     # Download photos
     df = pd.read_excel(path_to_xlsx)[['Артикул', 'Изображение товара']]
     for idx, item in df.iterrows():
-        print(f'{idx + 1} из {len(df.index)}')
-        sku = str(df["Артикул"][idx])
-        img_name = df["Изображение товара"][idx].split('?')[0].split('/')[-1]
-        folder_name = f'pics/preview/{sku[:2]}/{sku[2:4]}/{sku[4:]}'
-        image_url = df["Изображение товара"][idx]
-        if not os.path.exists(folder_name + '/' + img_name):  # Если файл еще не скачан
-            Path(folder_name).mkdir(parents=True, exist_ok=True)
-            response = requests.get(image_url, headers=headers)
-            if response.status_code:
-                fp = open(folder_name + '/' + img_name, 'wb')
-                fp.write(response.content)
-                fp.close()
-                print(image_url, 'ok')
-            else:
-                print(image_url, 'не доступен')
+        if 'missing' not in df["Изображение товара"][idx]:
+            print(f'{idx + 1} из {len(df.index)}', end=' ')
+            sku = str(df["Артикул"][idx])
+            img_name = df["Изображение товара"][idx].split('?')[0].split('/')[-1]
+            folder_name = f'pics/preview/{sku[:2]}/{sku[2:4]}/{sku[4:]}'
+            image_url = df["Изображение товара"][idx]
+            if not os.path.exists(folder_name + '/' + img_name):  # Если файл еще не скачан
+                Path(folder_name).mkdir(parents=True, exist_ok=True)
+                try:
+                    response = requests.get(image_url, headers=headers)
+
+                    if response.status_code == 200:
+                        fp = open(folder_name + '/' + img_name, 'wb')
+                        fp.write(response.content)
+                        fp.close()
+                        print(image_url, 'ok')
+                    else:
+                        print(image_url, 'не доступен')
+                except:
+                    print(image_url, 'Не работает')
 
 
-get_pics_from_urls(xlsx_path)
+def image_resize(path_to_xlsx):
+    df = pd.read_excel(path_to_xlsx)[['Артикул', 'Изображение товара']]
+    for idx, item in df.iterrows():
+        if 'missing' not in df["Изображение товара"][idx]:
+            print(f'{idx + 1} из {len(df.index)}')
+            sku = str(df["Артикул"][idx])
+            img_name = df["Изображение товара"][idx].split('?')[0].split('/')[-1]
+            folder_name = f'pics/preview/{sku[:2]}/{sku[2:4]}/{sku[4:]}'
+            folder_name_thumbs = f'pics/thumbs/{sku[:2]}/{sku[2:4]}/{sku[4:]}'
+
+            try:
+                fd_img = open(folder_name + '/' + img_name, 'rb')
+                img = Image.open(fd_img)
+                img = resizeimage.resize('thumbnail', img, [60, 60])
+                Path(folder_name_thumbs).mkdir(parents=True, exist_ok=True)
+                img.save(folder_name_thumbs + '/' + img_name, img.format)
+                fd_img.close()
+
+            except Exception as e:
+                print(img_name, e)
+
+
+# get_pics_from_urls(xlsx_path)
+image_resize(xlsx_path)
