@@ -255,6 +255,7 @@
 
 
 from webdriver_manager.chrome import ChromeDriverManager
+from collections.abc import MutableMapping
 import undetected_chromedriver as uc
 from selenium import webdriver
 from bs4 import BeautifulSoup
@@ -283,6 +284,17 @@ all_links = [
     #     'https://lenta.com/catalog/lenta-zoomarket---professionalnyjj-uhod/',
     #     'https://lenta.com/catalog/avtotovary/',
 ]
+
+
+def flatten_dict(d: MutableMapping, parent_key: str = '', sep: str = '.') -> MutableMapping:
+    items = []
+    for k, v in d.items():
+        new_key = parent_key + sep + k if parent_key else k
+        if isinstance(v, MutableMapping):
+            items.extend(flatten_dict(v, new_key, sep=sep).items())
+        else:
+            items.append((new_key, v))
+    return dict(items)
 
 
 def get_links_from_pages(all_links):
@@ -361,6 +373,7 @@ def get_dict_from_links(input_list, limit=5):
     subTitle = []
     img_urls = []
     link = []
+    json_files = []
 
     for idx, url in enumerate(links):
         if idx == limit:
@@ -368,12 +381,15 @@ def get_dict_from_links(input_list, limit=5):
             break
         print(f'{idx + 1} из {len(links)}  {url}')
         try:
+
             driver.get(url)
-            time.sleep(2)
+            time.sleep(3)
             html = driver.page_source
             soup = BeautifulSoup(html, 'lxml')
             json_file = json.loads(
                 soup.find('div', class_='sku-page-control-container sku-page__control')['data-model'])
+            json_files.append(json_file)
+
             properties = json_file['attributesGroups'][0]['properties']
 
             try:
@@ -481,7 +497,7 @@ def get_dict_from_links(input_list, limit=5):
         'Ссылки на фото': img_urls,
         'Характеристики': all_in_one,
     }
-    return diction
+    return diction, json_files
 
 
 def get_df_from_diction(diction):
@@ -499,5 +515,11 @@ def get_df_from_diction(diction):
 
 get_links_from_pages(all_links)
 
-bakaleya_dict = get_dict_from_links('bakaleya.txt', limit=10)
-get_df_from_diction(bakaleya_dict)
+(krasota_i_zdorove_dict, json_files) = get_dict_from_links('krasota-i-zdorove.txt', limit=31)
+get_df_from_diction(krasota_i_zdorove_dict)
+
+list_of_flatten_dicts = []
+for js_dict in json_files:
+    list_of_flatten_dicts.append(flatten_dict(js_dict))
+
+pd.DataFrame(list_of_flatten_dicts).to_excel('Все колонки.xlsx', index=False)
