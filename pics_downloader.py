@@ -6,7 +6,7 @@ import openpyxl
 from PIL import Image
 from resizeimage import resizeimage
 
-xlsx_path = 'Красота и здоровье_20221110_22-32.xlsx'
+xlsx_path = 'Промежуточно_Бакалея_20221111_23-16.xlsx'
 
 
 def get_pics_from_urls(path_to_xlsx):
@@ -18,7 +18,8 @@ def get_pics_from_urls(path_to_xlsx):
     for idx, item in df.iterrows():
         if 'missing' not in df["Изображение товара"][idx]:
             print(f'{idx + 1} из {len(df.index)}', end=' ')
-            sku = str(df["Артикул"][idx])
+            sku = str(df["Артикул"][idx]).replace('арт. ', '')
+            print(sku)
             img_name = df["Изображение товара"][idx].split('?')[0].split('/')[-1]
             folder_name = f'pics/preview/{sku[:2]}/{sku[2:4]}/{sku[4:]}'
             image_url = df["Изображение товара"][idx]
@@ -43,7 +44,7 @@ def image_resize(path_to_xlsx):
     for idx, item in df.iterrows():
         if 'missing' not in df["Изображение товара"][idx]:
             print(f'{idx + 1} из {len(df.index)}')
-            sku = str(df["Артикул"][idx])
+            sku = str(df["Артикул"][idx]).replace('арт. ', '')
             img_name = df["Изображение товара"][idx].split('?')[0].split('/')[-1]
             folder_name = f'pics/preview/{sku[:2]}/{sku[2:4]}/{sku[4:]}'
             folder_name_thumbs = f'pics/thumbs/{sku[:2]}/{sku[2:4]}/{sku[4:]}'

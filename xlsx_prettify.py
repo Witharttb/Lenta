@@ -2,7 +2,7 @@ import xlsxwriter
 import imagesize
 import pandas as pd
 
-xlsx_p = 'Красота и здоровье_20221110_22-32.xlsx'
+xlsx_p = 'Промежуточно_Бакалея_20221111_23-16.xlsx'
 box_size = 180
 dpi_koef = 0.8
 offset = box_size / 8
@@ -71,7 +71,7 @@ def make_excel_photo(xlsx_path):
 
     for idx, item in df.iterrows():
         print(f'{idx + 1} из {len(df.index)}')
-        sku = str(df["Артикул"][idx])
+        sku = str(df["Артикул"][idx]).replace('арт. ', '')
         img_name = df["Изображение товара"][idx].split('?')[0].split('/')[-1]
         folder_name = f'pics/thumbs/{sku[:2]}/{sku[2:4]}/{sku[4:]}'
         worksheet.set_row_pixels(idx + 1, box_size)
