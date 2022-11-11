@@ -6,7 +6,7 @@ import openpyxl
 from PIL import Image
 from resizeimage import resizeimage
 
-xlsx_path = 'Здоровое питание_20221110_12-50.xlsx'
+xlsx_path = 'Красота и здоровье_20221110_22-32.xlsx'
 
 
 def get_pics_from_urls(path_to_xlsx):
@@ -51,7 +51,7 @@ def image_resize(path_to_xlsx):
             try:
                 fd_img = open(folder_name + '/' + img_name, 'rb')
                 img = Image.open(fd_img)
-                img = resizeimage.resize('thumbnail', img, [60, 60])
+                img = resizeimage.resize('thumbnail', img, [200, 200])
                 Path(folder_name_thumbs).mkdir(parents=True, exist_ok=True)
                 img.save(folder_name_thumbs + '/' + img_name, img.format)
                 fd_img.close()
@@ -60,5 +60,5 @@ def image_resize(path_to_xlsx):
                 print(img_name, e)
 
 
-# get_pics_from_urls(xlsx_path)
+get_pics_from_urls(xlsx_path)
 image_resize(xlsx_path)

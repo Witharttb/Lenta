@@ -1,12 +1,10 @@
 import xlsxwriter
 import imagesize
-import time
 import pandas as pd
-from openpyxl import load_workbook
-from openpyxl.utils.dataframe import dataframe_to_rows
 
-xlsx_path = 'Здоровое питание_20221110_12-50.xlsx'
-box_size = 60
+xlsx_p = 'Красота и здоровье_20221110_22-32.xlsx'
+box_size = 180
+dpi_koef = 0.8
 offset = box_size / 8
 
 
@@ -30,17 +28,16 @@ def insert_pics(path_to_xlsx):
 
         if 'missing' not in img_name:
             try:
-                dpi_koef = 0.5
                 png_path = folder_name + '/' + img_name
                 width, height = imagesize.get(png_path)
                 print(png_path, width, height)
                 x_offset = ((60 - width) / 2) * dpi_koef
                 y_offset = ((60 - height) / 2) * dpi_koef
 
-                worksheet.insert_image(idx, 1, png_path,
-                                       {'x_scale': 0.8, 'y_scale': 0.8,
-                                        'x_offset': x_offset + offset,
-                                        'y_offset': y_offset + offset})
+                worksheet.insert_image(idx + 1, 4, png_path,
+                                       {'x_scale': dpi_koef, 'y_scale': dpi_koef,
+                                        'x_offset': (box_size - width * dpi_koef) / 2,
+                                        'y_offset': (box_size - height * dpi_koef) / 2})
 
                 print(x_offset, width)
                 print(y_offset, height)
@@ -55,43 +52,47 @@ def format_col_width(ws):
     ws.set_column('E:E', 20)
 
 
-df = pd.read_excel(xlsx_path)
-df['Изображение товара'] = ''
+def make_excel_photo(xlsx_path):
+    df = pd.read_excel(xlsx_path).fillna('')
+    h, w = df.shape
+    df['Изображение товара'] = ''
+    df.insert(13, "Первое фото", '', True)
+    df.insert(16, "Полное описание", '', True)
+    df['Первое фото'] = df['Ссылки на фото'].apply(lambda x: x if ',' not in x else x.split(',')[0])
+    df['Ссылки на фото'] = df['Ссылки на фото'].\
+        apply(lambda x: x.replace(x.split(', ')[0] + ', ', '') if ', ' in x else ' ')
+    df['Полное описание'] = df['Описание товара'] + '\n\n' + df['Характеристики']
+    writer = pd.ExcelWriter("__" + xlsx_path, engine='xlsxwriter')
+    df.to_excel(writer, sheet_name='Sheet1', index=False)
+    df = pd.read_excel(xlsx_path)[['Артикул', 'Изображение товара']]
 
-writer = pd.ExcelWriter("__"+xlsx_path, engine='xlsxwriter')
-df.to_excel(writer, sheet_name='Sheet1', index=False)
-df = pd.read_excel(xlsx_path)[['Артикул', 'Изображение товара']]
+    worksheet = writer.sheets['Sheet1']
+    worksheet.set_column_pixels(4, 4, box_size)
 
-workbook = writer.book
-worksheet = writer.sheets['Sheet1']
+    for idx, item in df.iterrows():
+        print(f'{idx + 1} из {len(df.index)}')
+        sku = str(df["Артикул"][idx])
+        img_name = df["Изображение товара"][idx].split('?')[0].split('/')[-1]
+        folder_name = f'pics/thumbs/{sku[:2]}/{sku[2:4]}/{sku[4:]}'
+        worksheet.set_row_pixels(idx + 1, box_size)
 
-# format_col_width(worksheet)
+        if 'missing' not in img_name:
+            try:
+                png_path = folder_name + '/' + img_name
+                width, height = imagesize.get(png_path)
+                x_offset = ((60 - width) / 2) * dpi_koef
+                y_offset = ((60 - height) / 2) * dpi_koef
 
-for idx, item in df.iterrows():
-    print(f'{idx + 1} из {len(df.index)}')
-    sku = str(df["Артикул"][idx])
-    img_name = df["Изображение товара"][idx].split('?')[0].split('/')[-1]
-    folder_name = f'pics/thumbs/{sku[:2]}/{sku[2:4]}/{sku[4:]}'
-    image_url = df["Изображение товара"][idx]
-    worksheet.set_row_pixels(idx+1, box_size)
+                worksheet.insert_image(idx + 1, 4, png_path,
+                                       {'x_scale': dpi_koef, 'y_scale': dpi_koef,
+                                        'x_offset': (box_size - width * dpi_koef) / 2,
+                                        'y_offset': (box_size - height * dpi_koef) / 2})
+            except Exception as e:
+                print(e)
 
-    if 'missing' not in img_name:
-        try:
-            dpi_koef = 0.5
-            png_path = folder_name + '/' + img_name
-            width, height = imagesize.get(png_path)
-            print(png_path, width, height)
-            x_offset = ((60 - width) / 2) * dpi_koef
-            y_offset = ((60 - height) / 2) * dpi_koef
+    writer.close()
 
-            worksheet.insert_image(idx+1, 4, png_path,
-                                   {'x_scale': 0.8, 'y_scale': 0.8,
-                                    'x_offset': x_offset + offset,
-                                    'y_offset': y_offset + offset})
-        except:
-            pass
-
-writer.close()
 
 # insert_pics(xlsx_path)
 # add_pictures(xlsx_path)
+make_excel_photo(xlsx_p)
