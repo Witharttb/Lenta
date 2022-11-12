@@ -1,0 +1,16 @@
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Accept-Encoding: gzip, deflate, br
+Accept-Language: ru-RU,ru;q=0.9
+Cache-Control: max-age=0
+Connection: keep-alive
+Cookie: .ASPXANONYMOUS=xlPy7klTj5zIOBBcqDK9g0LiuO3Qpk4tbj0EEqtkPM53-LkJFc0-sxdsNeNj_Nfa-gCc885qKdlWtLTm6FeWZkxE9t1d8Ffxggihkj9c2RAcGm6YiGhq4F5rZIO1z9ksUvnevA2; ASP.NET_SessionId=knz1tp3hjesbo0h2mgvlwye3; cookiesession1=678B286DACDEGHIJKLMNOPQRSTUV86A5; CustomerId=e65b110746cc476db927caed9e5a45da; ValidationToken=a8b1da0e81642503f7dcf7f9448a7b26; DontShowCookieNotification=true; _tm_lt_sid=1668231448549.835530; _gcl_au=1.1.1341337104.1668231467; _ym_uid=1668231467637796276; _ym_d=1668231467; _ym_isad=1; tmr_lvid=f8c8b56d0e281f5dda4b10628afec255; tmr_lvidTS=1668231487704; KFP_DID=6c3e07ae-e172-eabb-442b-27ff6b4f6408; _ga=GA1.2.633494069.1668231494; _gid=GA1.2.367095220.1668231494; flocktory-uuid=5b4e9ca0-6415-428c-a3d5-63c75681cea7-1; _a_d3t6sf=du5wdaeu8jTQba8VdXv7ijJO; _tt_enable_cookie=1; _ttp=9da08aa0-75d8-479e-8d69-7a0314b91761; DeliveryOptions=Pickup; CityCookie=spb; ShouldSetDeliveryOptions=False; lentaT2=spb; Store=0214; ReviewedSkus=466933; oxxfgh=a30a4c13-4801-43ef-920d-8e492a873793#0#5184000000#5000#1800000#44965; qrator_ssid=1668241717.722.6Cf29JaDXzWskvqO-c6pqe7t2l8ti9dcab4suat3gpkifv8qb; _ym_visorc=b; _gat_UA-327775-1=1; _dc_gtm_UA-327775-35=1; qrator_jsid=1668241715.162.DR3qHNogalZNvxHt-v6d82km5m242nbggnn7123jafol7d2d2; tmr_detect=0%7C1668242525609; tmr_reqNum=50
+Host: lenta.com
+sec-ch-ua: "Google Chrome";v="107", "Chromium";v="107", "Not=A?Brand";v="24"
+sec-ch-ua-mobile: ?0
+sec-ch-ua-platform: "Windows"
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36
