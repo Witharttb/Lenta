@@ -2,7 +2,7 @@ import xlsxwriter
 import imagesize
 import pandas as pd
 
-xlsx_p = 'Промежуточно_Бакалея_20221111_23-16.xlsx'
+xlsx_p = 'Промежуточно_Бакалея_20221112_05-33.xlsx'
 box_size = 180
 dpi_koef = 0.8
 offset = box_size / 8
