@@ -5,8 +5,7 @@ import os
 import openpyxl
 from PIL import Image
 from resizeimage import resizeimage
-
-xlsx_path = 'Промежуточно_Бакалея_20221112_05-33.xlsx'
+xlsx_path = 'Бакалея_20221112_19-04.xlsx'
 
 
 def get_pics_from_urls(path_to_xlsx):

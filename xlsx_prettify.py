@@ -2,7 +2,7 @@ import xlsxwriter
 import imagesize
 import pandas as pd
 
-xlsx_p = 'Промежуточно_Бакалея_20221112_05-33.xlsx'
+xlsx_p = 'Бакалея_20221112_19-04.xlsx'
 box_size = 180
 dpi_koef = 0.8
 offset = box_size / 8
@@ -59,7 +59,7 @@ def make_excel_photo(xlsx_path):
     df.insert(13, "Первое фото", '', True)
     df.insert(16, "Полное описание", '', True)
     df['Первое фото'] = df['Ссылки на фото'].apply(lambda x: x if ',' not in x else x.split(',')[0])
-    df['Ссылки на фото'] = df['Ссылки на фото'].\
+    df['Ссылки на фото'] = df['Ссылки на фото']. \
         apply(lambda x: x.replace(x.split(', ')[0] + ', ', '') if ', ' in x else ' ')
     df['Полное описание'] = df['Описание товара'] + '\n\n' + df['Характеристики']
     writer = pd.ExcelWriter("__" + xlsx_path, engine='xlsxwriter')
@@ -93,6 +93,22 @@ def make_excel_photo(xlsx_path):
     writer.close()
 
 
+def make_excel_no_photo(xlsx_path):
+    df = pd.read_excel(xlsx_path).fillna('')
+    df['Изображение товара'] = df['Изображение товара'].apply(lambda x: f'=HYPERLINK("{x}", "֍")')
+    df.rename({'Изображение товара': '֍'}, axis=1, inplace=True)
+    df.insert(13, "Первое фото", '', True)
+    df.insert(16, "Полное описание", '', True)
+    df['Первое фото'] = df['Ссылки на фото'].apply(lambda x: x if ',' not in x else x.split(',')[0])
+    df['Ссылки на фото'] = df['Ссылки на фото']. \
+        apply(lambda x: x.replace(x.split(', ')[0] + ', ', '') if ', ' in x else ' ')
+    df['Полное описание'] = df['Описание товара'] + '\n\n' + df['Характеристики']
+    writer = pd.ExcelWriter("__" + xlsx_path, engine='xlsxwriter')
+    df.to_excel(writer, sheet_name='Sheet1', index=False)
+    writer.close()
+
+
 # insert_pics(xlsx_path)
 # add_pictures(xlsx_path)
-make_excel_photo(xlsx_p)
+# make_excel_photo(xlsx_p)
+make_excel_no_photo(xlsx_p)
